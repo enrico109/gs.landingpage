@@ -1,0 +1,124 @@
+
+:root {
+  --azul-noite: #1B2A41;
+  --azul-claro: #26395a;
+  --ambar: #F2A93B;
+  --ambar-escuro: #8a5a0e;   
+  --fundo: #F4F6F8;
+  --branco: #FFFFFF;
+  --verde: #2E7D5B;
+  --vermelho: #B3261E;
+  --texto: #1B2A41;
+  --texto-suave: #45536a;   
+  --linha: #d5dde7;
+  --raio: 16px;
+  --largura: 1120px;
+  color-scheme: light;
+}
+
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.25rem;      
+  line-height: 1.6;
+
+}
+
+img, svg { max-width: 100%; height: auto; display: block; }
+h1, h2, h3, h4 { line-height: 1.2; margin: 0 0 0.5em; text-wrap: balance; }
+h2 { font-size: clamp(2rem, 5vw, 2.8rem); }
+h3 { font-size: 1.4rem; }
+p { margin: 0 0 1em; }
+a { color: var(--azul-noite); }
+[hidden] { display: none !important; }
+
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 4px solid var(--ambar);
+  outline-offset: 3px;
+}
+
+
+.pular {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  background: var(--azul-noite);
+  color: var(--branco);
+  padding: 12px 20px;
+  border-radius: 999px;
+  z-index: 100;
+}
+.pular:focus { top: 12px; }
+
+
+.cabecalho {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--azul-noite);
+  color: var(--branco);
+}
+
+
+.cabecalho-dentro {
+  max-width: var(--largura);
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+}
+
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--branco);
+  font-weight: 800;
+  font-size: 1.25rem;
+  text-decoration: none;
+}
+
+
+.marca-luz {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: var(--ambar);
+  box-shadow: 0 0 14px var(--ambar);
+}
+
+nav { flex: 1; min-width: 0; }
+
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;             
+  gap: 4px;
+}
+
+
+.menu-link {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 999px;
+  color: #dfe6f0;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.menu-link:hover { background: var(--azul-claro); color: var(--branco); }
+
+.menu-link.ativo { background: var(--ambar); color: var(--azul-noite); }
