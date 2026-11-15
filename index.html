@@ -130,7 +130,90 @@
       </div>
     </section>
 
-    
+    <section id="como-funciona" class="secao">
+      <h2>Como funciona</h2>
+      <ol class="passos">
+        <li>
+          <span class="passo-numero" aria-hidden="true">1</span>
+          <h3>Perceber</h3>
+          <p>Cada sensor percebe movimento no seu cômodo. Andar pela casa já é o sinal de que está tudo bem.</p>
+        </li>
+        <li>
+          <span class="passo-numero" aria-hidden="true">2</span>
+          <h3>Contar</h3>
+          <p>A Luzia conta há quantos minutos ninguém se mexe e compara com o limite daquele cômodo.</p>
+        </li>
+        <li>
+          <span class="passo-numero" aria-hidden="true">3</span>
+          <h3>Chamar ajuda</h3>
+          <p>Se passar do limite, a luz da janela acende e o alarme toca. O vizinho vê e vem ajudar.</p>
+        </li>
+      </ol>
+
+      <h3 class="subtitulo">Cada cômodo tem o seu limite</h3>
+      <div class="tabela-rolagem">
+        <table>
+          <caption>Tabela de limites: a mesma no Python, no ESP32 e nesta página</caption>
+          <thead>
+            <tr><th scope="col">Estado</th><th scope="col">Banheiro</th><th scope="col">Outros cômodos (dia)</th><th scope="col">Outros cômodos (noite)</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row"><span class="etiqueta etiqueta-normal">NORMAL</span></th><td>menos de 20 min parada</td><td>menos de 2 h</td><td>menos de 4 h</td></tr>
+            <tr><th scope="row"><span class="etiqueta etiqueta-atencao">ATENÇÃO</span></th><td>a partir de 20 min</td><td>a partir de 2 h</td><td>a partir de 4 h</td></tr>
+            <tr><th scope="row"><span class="etiqueta etiqueta-alerta">ALERTA</span></th><td>a partir de 40 min</td><td>a partir de 4 h</td><td>a partir de 8 h</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="regras">
+        <li><strong>Casa muito fria ou muito quente</strong> (abaixo de 12 °C ou acima de 32 °C): os limites caem pela metade.</li>
+        <li><strong>Botão de socorro:</strong> SOCORRO na hora, sem esperar.</li>
+        <li><strong>Porta abre entre 22h e 6h com a Dona Maria na cama:</strong> INVASÃO.</li>
+      </ul>
+    </section>
+
+  <section id="simulador" class="secao">
+      <h2>Simulador</h2>
+      <p class="lead">Escolha o cômodo e há quanto tempo a Dona Maria está parada. A família responde.</p>
+
+      <div class="simulador">
+        <form id="form-simulador" class="formulario" novalidate>
+          <div class="campo">
+            <label for="sim-comodo">Em qual cômodo ela está?</label>
+            <select id="sim-comodo">
+              <option value="quarto">Quarto (Dorival)</option>
+              <option value="banheiro">Banheiro (Lavínia)</option>
+              <option value="cozinha">Cozinha (Salete)</option>
+              <option value="sala">Sala (Sofia)</option>
+              <option value="corredor">Corredor (Andrade)</option>
+              <option value="entrada">Entrada (Portela)</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="sim-minutos">Há quantos minutos ela está parada?</label>
+            <input type="number" id="sim-minutos" inputmode="numeric" min="0" max="1440" step="1" placeholder="Ex.: 45" aria-describedby="erro-minutos">
+            <p class="erro" id="erro-minutos"></p>
+          </div>
+          <div class="campo campo-caixa">
+            <input type="checkbox" id="sim-noite">
+            <label for="sim-noite">É noite (ela está dormindo)</label>
+          </div>
+          <div class="campo campo-caixa">
+            <input type="checkbox" id="sim-temperatura">
+            <label for="sim-temperatura">A casa está abaixo de 12 °C ou acima de 32 °C</label>
+          </div>
+          <button type="submit" class="botao">Simular</button>
+        </form>
+
+        <div id="sim-resultado" class="resultado" aria-live="polite" hidden>
+          <p class="resultado-estado"><span id="sim-estado">NORMAL</span></p>
+          <p class="resultado-personagem" id="sim-personagem"></p>
+          <p class="resultado-fala" id="sim-fala"></p>
+          <p class="resultado-acao" id="sim-acao"></p>
+          <p class="resultado-explicacao" id="sim-explicacao"></p>
+        </div>
+      </div>
+    </section>
+
 
   </main>
 </body>

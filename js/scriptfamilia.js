@@ -1,5 +1,7 @@
 /* =====================================================================
- *  A GRANDE FAMÍLIA - palco animado da família (seção "A família")
+ *  DESENHO FEITO POR GUILHERME ENRICO E ESSA PARTE FEITA POR IA = CLAUDE 
+
+A GRANDE FAMÍLIA - palco animado da família (seção "A família")
  *  JavaScript puro: desenha os 7 membros em SVG e conta a história.
  *
  *  Peças do HTML que este arquivo usa:
@@ -15,7 +17,9 @@
  *    - quadro() roda ~60 vezes por segundo (requestAnimationFrame) e move
  *      cada personagem um pouquinho em direção ao lugar certo
  *    - com prefers-reduced-motion, o balanço e o tremor ficam desligados
- * ===================================================================== */
+ 
+
+===================================================================== */
 (function () {
   var NS = "http://www.w3.org/2000/svg";
   var svg = document.getElementById("gf-palco");
