@@ -214,6 +214,123 @@
       </div>
     </section>
 
+    
+    <section id="galeria" class="secao">
+      <h2>Galeria</h2>
+      <p class="lead">As três partes do projeto em imagens.</p>
+
+      <div id="slideshow" class="slideshow" role="region" aria-roledescription="carrossel" aria-label="Imagens do projeto">
+        <figure class="slide">
+          <img src="imagens/familia.png" alt="Os sete membros da Grande Família lado a lado, cada um com uma cor e um rosto: Dorival, Lavínia, Salete, Luzia, Sofia, Andrade e Portela." width="1088" height="545">
+          <figcaption><strong>A família.</strong> Cada sensor tem nome, cor e um jeito próprio de cuidar.</figcaption>
+        </figure>
+        <figure class="slide">
+          <img src="imagens/casa-alerta.png" alt="Planta da casa da Dona Maria com a central em ALERTA: ela caiu no banheiro e a luz da janela pisca e o Seu Antônio, o vizinho, já está a caminho." width="1088" height="675">
+          <figcaption><strong>A casa em ALERTA.</strong> 40 minutos sem movimento no banheiro: a janela pisca e o vizinho é chamado.</figcaption>
+        </figure>
+        <figure class="slide">
+          <img src="imagens/grafico-modo-noite.png" alt="Gráfico da atividade da Dona Maria ao longo do dia em dois cenários. A atividade fica abaixo do limiar de 3 movimentos por hora entre 23h02 e 4h58 na rotina comum e entre 23h27 e 6h33 no inverno." width="1500" height="825">
+          <figcaption><strong>A matemática do sono.</strong> Uma função cosseno mostra a hora certa de ligar o modo noite.</figcaption>
+        </figure>
+
+        <div class="slideshow-controles">
+          <button type="button" class="botao-redondo" id="slide-anterior" aria-label="Imagem anterior">&#8592;</button>
+          <div class="bolinhas" id="slide-bolinhas"></div>
+          <button type="button" class="botao-redondo" id="slide-proximo" aria-label="Próxima imagem">&#8594;</button>
+        </div>
+        <button type="button" class="botao botao-claro botao-pequeno" id="slide-pausar">Pausar troca automática</button>
+      </div>
+    </section>
+
+    <!-- ===================== REDE DE CUIDADO ===================== -->
+    <section id="cadastro" class="secao">
+      <h2>Rede de cuidado</h2>
+      <p class="lead">O vizinho é a primeira ajuda. Quanto mais gente de confiança, mais rápido o socorro chega.</p>
+
+      <div class="duas-colunas">
+        <div>
+          <h3>Quem a Luzia chama</h3>
+          <ol class="rede">
+            <li><span class="etiqueta etiqueta-alerta">ALERTA</span> ou <span class="etiqueta etiqueta-alerta">SOCORRO</span>
+              <p>A luz da janela acende e o alarme toca. Primeiro o <strong>vizinho</strong> e o <strong>familiar</strong>; depois o <strong>SAMU (192)</strong>.</p></li>
+            <li><span class="etiqueta etiqueta-invasao">INVASÃO</span>
+              <p>O alarme toca e o vizinho é avisado. A <strong>Polícia (190)</strong> é chamada.</p></li>
+          </ol>
+        </div>
+
+        <div>
+          <h3>Cadastre um vizinho de confiança</h3>
+          <form id="form-vizinho" class="formulario" novalidate>
+            <div class="campo">
+              <label for="vizinho-nome">Nome do vizinho</label>
+              <input type="text" id="vizinho-nome" autocomplete="name" aria-describedby="erro-nome">
+              <p class="erro" id="erro-nome"></p>
+            </div>
+            <div class="campo">
+              <label for="vizinho-telefone">Telefone com DDD</label>
+              <input type="tel" id="vizinho-telefone" autocomplete="tel" inputmode="tel" placeholder="(11) 91234-5678" aria-describedby="erro-telefone">
+              <p class="erro" id="erro-telefone"></p>
+            </div>
+            <div class="campo">
+              <label for="vizinho-bairro">Bairro</label>
+              <input type="text" id="vizinho-bairro" aria-describedby="erro-bairro">
+              <p class="erro" id="erro-bairro"></p>
+            </div>
+            <button type="submit" class="botao">Cadastrar vizinho</button>
+            <p class="sucesso" id="form-sucesso" role="status" hidden></p>
+          </form>
+          <h4 class="lista-titulo">Vizinhos cadastrados nesta visita</h4>
+          <ul class="lista-vizinhos" id="lista-vizinhos"></ul>
+          <p class="nota">Demonstração: nada é enviado nem guardado. Ao recarregar a página, a lista some.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SOBRE ===================== -->
+    <section id="sobre" class="secao">
+      <h2>Sobre o projeto</h2>
+      <div class="cartoes">
+        <article class="cartao cartao-ods">
+          <p class="ods-numero">ODS 3</p>
+          <h3>Saúde e bem-estar</h3>
+          <p>Socorro mais rápido depois de uma queda.</p>
+        </article>
+        <article class="cartao cartao-ods">
+          <p class="ods-numero">ODS 10</p>
+          <h3>Redução das desigualdades</h3>
+          <p>Funciona sem celular e sem internet, para quem não tem ou não usa.</p>
+        </article>
+        <article class="cartao cartao-ods">
+          <p class="ods-numero">ODS 11</p>
+          <h3>Cidades e comunidades</h3>
+          <p>O vizinho vira rede de proteção do bairro.</p>
+        </article>
+      </div>
+
+      <h3 class="subtitulo">As partes do projeto</h3>
+      <div class="tabela-rolagem">
+        <table>
+          <caption>Uma parte em cada disciplina</caption>
+          <thead><tr><th scope="col">Parte</th><th scope="col">O que faz</th></tr></thead>
+          <tbody>
+            <tr><td>Central da Luzia (Python)</td><td>Menu, ocorrências, rede de cuidado e relatório</td></tr>
+            <tr><td>Modelo do modo noite (Matemática)</td><td>Função cosseno que decide a hora do modo noite</td></tr>
+            <tr><td>Luzia no ESP32 (Edge)</td><td>Mede, decide e alerta sem internet, no Wokwi</td></tr>
+            <tr><td>Esta página (Web)</td><td>HTML, CSS e JavaScript puro: explica e simula o projeto</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p><strong>A Grande Família</strong> · Global Solution 2026.2 · CitizenTech · FIAP · Engenharia de Software</p>
+    <p>Equipe: <em>(nomes completos e RMs)</em></p>
+    <p>Todos os dados são simulados. A Dona Maria é uma personagem fictícia.</p>
+  </footer>
+</body>
+</html>
+
 
   </main>
 </body>
