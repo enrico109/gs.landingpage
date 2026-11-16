@@ -415,3 +415,30 @@ tbody tr:last-child th, tbody tr:last-child td { border-bottom: none; }
 .gf-ficha p { margin: 0; color: var(--texto-suave); }
 .gf-ficha q { color: var(--texto); font-weight: 600; }
 
+
+.simulador {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+  margin-top: 32px;
+}
+.simulador .formulario,
+.resultado { background: var(--branco); border-radius: var(--raio); padding: 28px; }
+.resultado { border-left: 10px solid var(--linha); }
+/* As classes abaixo são colocadas pelo script.js conforme o estado */
+.resultado.estado-normal { border-left-color: var(--verde); }
+.resultado.estado-atencao { border-left-color: var(--ambar); }
+.resultado.estado-alerta { border-left-color: var(--vermelho); }
+.resultado-estado span {
+  display: inline-block;
+  padding: 6px 20px;
+  border-radius: 999px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.resultado-personagem { font-weight: 800; font-size: 1.3rem; margin-bottom: 4px; }
+.resultado-fala { font-size: 1.5rem; font-style: italic; }
+.resultado-explicacao { color: var(--texto-suave); font-size: 1.05rem; margin-bottom: 0; }
+
