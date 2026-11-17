@@ -241,3 +241,139 @@ function iniciarSlideshow() {
 }
 
 
+function somenteDigitos(texto) {
+  let resultado = "";
+  for (let i = 0; i < texto.length; i++) {
+    const caractere = texto[i];
+    if (caractere >= "0" && caractere <= "9") {
+      resultado = resultado + caractere;
+    }
+  }
+  return resultado;
+}
+
+
+function formatarTelefone(digitos) {
+  const ddd = digitos.slice(0, 2);
+  const numero = digitos.slice(2);
+  const meio = numero.length - 4;  
+  return "(" + ddd + ") " + numero.slice(0, meio) + "-" + numero.slice(meio);
+}
+
+// cada funcao corretaf
+function validarNome(nome) {
+  if (nome === "") {
+    return "Digite o nome do vizinho.";
+  }
+  if (nome.length < 3) {
+    return "O nome precisa ter pelo menos 3 letras.";
+  }
+  return "";
+}
+
+function validarTelefone(telefone) {
+  if (telefone === "") {
+    return "Digite o telefone com DDD.";
+  }
+  const digitos = somenteDigitos(telefone);
+  if (digitos.length < 10 || digitos.length > 11) {
+    return "Use DDD + número (10 ou 11 números). Exemplo: (11) 91234-5678.";
+  }
+  if (digitos[0] === "0") {
+    return "O DDD não começa com 0. Exemplo: 11 para São Paulo.";
+  }
+  return "";
+}
+
+function validarBairro(bairro) {
+  if (bairro === "") {
+    return "Digite o bairro onde o vizinho mora.";
+  }
+  return "";
+}
+
+// Mostra (ou apaga) o erro de UM campo
+function mostrarErro(campo, caixaErro, mensagem) {
+  caixaErro.textContent = mensagem;
+  if (mensagem === "") {
+    campo.classList.remove("campo-invalido");
+    campo.removeAttribute("aria-invalid");
+  } else {
+    campo.classList.add("campo-invalido");
+    campo.setAttribute("aria-invalid", "true");   
+  }
+}
+// avisa o erro do usario 
+
+function iniciarFormularioVizinho() {
+  const form = pegar("form-vizinho");
+  const campoNome = pegar("vizinho-nome");
+  const campoTelefone = pegar("vizinho-telefone");
+  const campoBairro = pegar("vizinho-bairro");
+  const erroNome = pegar("erro-nome");
+  const erroTelefone = pegar("erro-telefone");
+  const erroBairro = pegar("erro-bairro");
+  const sucesso = pegar("form-sucesso");
+  if (!todosExistem([form, campoNome, campoTelefone, campoBairro, erroNome, erroTelefone, erroBairro, sucesso])) {
+    return;
+  }
+  o
+  const lista = document.getElementById("lista-vizinhos");
+
+  
+  const campos = [campoNome, campoTelefone, campoBairro];
+  const erros = [erroNome, erroTelefone, erroBairro];
+  const validadores = [validarNome, validarTelefone, validarBairro];
+
+  form.addEventListener("submit", function (evento) {
+    evento.preventDefault();   
+    sucesso.hidden = true;
+
+    let primeiroErrado = null;
+    for (let i = 0; i < campos.length; i++) {
+    
+      const valor = campos[i].value.trim();
+      const mensagem = validadores[i](valor);
+      mostrarErro(campos[i], erros[i], mensagem);
+      if (mensagem !== "" && primeiroErrado === null) {
+        primeiroErrado = campos[i];
+      }
+    }
+
+    
+    if (primeiroErrado !== null) {
+      primeiroErrado.focus();
+      return;
+    }
+
+   
+    const nome = campoNome.value.trim();
+    const telefone = formatarTelefone(somenteDigitos(campoTelefone.value));
+    const bairro = campoBairro.value.trim();
+
+    // MANIPULAÇÃO DO DOM: mensagem de sucesso.
+    
+    sucesso.textContent = "Pronto! " + nome + " agora faz parte da rede de cuidado da Dona Maria. " +
+      "Se a Luzia der ALERTA, a luz da janela chama " + nome + " primeiro.";
+    sucesso.hidden = false;
+
+    // MANIPULAÇÃO DO DOM: novo item na lista de vizinhos 
+    if (lista !== null) {
+      const item = document.createElement("li");
+      item.textContent = nome + " · " + telefone + " · " + bairro;
+      lista.appendChild(item);
+    }
+
+    form.reset();   // limpa os campos para cadastrar outro
+    
+  });
+
+  // Enquanto a pessoa corrige um campo, o erro DAQUELE campo some
+  for (let i = 0; i < campos.length; i++) {
+    campos[i].addEventListener("input", function () {
+      if (erros[i].textContent !== "") {
+        mostrarErro(campos[i], erros[i], validadores[i](campos[i].value.trim()));
+      }
+    });
+  }
+}
