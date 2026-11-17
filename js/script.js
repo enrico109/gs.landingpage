@@ -84,3 +84,160 @@ function iniciarMenu() {
   window.addEventListener("scroll", atualizarMenu);
   atualizarMenu();   
 }
+
+function iniciarSlideshow() {
+  const caixa = pegar("slideshow");
+  const botaoAnterior = pegar("slide-anterior");
+  const botaoProximo = pegar("slide-proximo");
+  const caixaBolinhas = pegar("slide-bolinhas");
+  const botaoPausar = pegar("slide-pausar");
+  if (!todosExistem([caixa, botaoAnterior, botaoProximo, caixaBolinhas, botaoPausar])) {
+    return;
+  }
+
+  const slides = caixa.querySelectorAll(".slide");
+  if (slides.length === 0) {
+    console.warn("[A Grande Família] Nenhum class=\"slide\" dentro do #slideshow.");
+    return;
+  }
+
+  let atual = 0;               
+  let temporizador = null;     
+
+  let pausado = preferenciaMovimento.matches;
+  let mouseDentro = false;     
+  let focoDentro = false;      
+
+  // MANIPULAÇÃO DO DOM: criamos uma bolinha (<button>) para cada slide
+  const bolinhas = [];
+  for (let i = 0; i < slides.length; i++) {
+    const bolinha = document.createElement("button");
+    bolinha.type = "button";
+    bolinha.className = "bolinha";
+    bolinha.setAttribute("aria-label", "Mostrar imagem " + (i + 1) + " de " + slides.length);
+    i
+    bolinha.addEventListener("click", function () {
+      mostrarSlide(i);
+      reiniciarTroca();   
+    });
+    caixaBolinhas.appendChild(bolinha);
+    bolinhas.push(bolinha);
+  }
+
+  // Mostra o slide da posição 
+  function mostrarSlide(posicao) {
+    mo
+    if (posicao >= slides.length) {
+      posicao = 0;
+    } else if (posicao < 0) {
+      posicao = slides.length - 1;
+    }
+    atual = posicao;
+
+    for (let i = 0; i < slides.length; i++) {
+      const visivel = (i === atual);
+      slides[i].hidden = !visivel;                    
+      slides[i].classList.toggle("ativo", visivel);   
+      bolinhas[i].classList.toggle("ativa", visivel);
+      if (visivel) {
+        bolinhas[i].setAttribute("aria-current", "true");
+      } else {
+        bolinhas[i].removeAttribute("aria-current");
+      }
+    }
+  }
+
+ 
+  function ligarTroca() {
+    
+    if (temporizador !== null || pausado || mouseDentro || focoDentro) {
+      return;
+    }
+    temporizador = setInterval(function () {
+      mostrarSlide(atual + 1);
+    }, INTERVALO_SLIDE);
+  }
+
+  // Desliga a troca 
+  function desligarTroca() {
+    clearInterval(temporizador);
+    temporizador = null;
+  }
+
+  function reiniciarTroca() {
+    desligarTroca();
+    ligarTroca();
+  }
+
+  // Atualiza o texto 
+  function atualizarBotaoPausar() {
+    if (pausado) {
+      botaoPausar.textContent = "Continuar troca automática";
+    } else {
+      botaoPausar.textContent = "Pausar troca automática";
+    }
+    botaoPausar.setAttribute("aria-pressed", String(pausado));
+  }
+
+  // Botões anterior e próximo
+  botaoAnterior.addEventListener("click", function () {
+    mostrarSlide(atual - 1);
+    reiniciarTroca();
+  });
+  botaoProximo.addEventListener("click", function () {
+    mostrarSlide(atual + 1);
+    reiniciarTroca();
+  });
+
+ 
+  botaoPausar.addEventListener("click", function () {
+    pausado = !pausado;
+    if (pausado) {
+      desligarTroca();
+    } else {
+      ligarTroca();
+    }
+    atualizarBotaoPausar();
+  });
+
+  
+  caixa.addEventListener("mouseenter", function () {
+    mouseDentro = true;
+    desligarTroca();
+  });
+  caixa.addEventListener("mouseleave", function () {
+    mouseDentro = false;
+    ligarTroca();
+  });
+
+  
+  caixa.addEventListener("focusin", function () {
+    focoDentro = true;
+    desligarTroca();
+  });
+  caixa.addEventListener("focusout", function (evento) {
+    
+    if (!caixa.contains(evento.relatedTarget)) {
+      focoDentro = false;
+      ligarTroca();
+    }
+  });
+
+  // preferencia da pessoa 
+  preferenciaMovimento.addEventListener("change", function () {
+    pausado = preferenciaMovimento.matches;
+    if (pausado) {
+      desligarTroca();
+    } else {
+      ligarTroca();
+    }
+    atualizarBotaoPausar();
+  });
+
+  // slide troca 
+  mostrarSlide(0);
+  atualizarBotaoPausar();
+  ligarTroca();
+}
+
+
