@@ -377,3 +377,224 @@ function iniciarFormularioVizinho() {
     });
   }
 }
+
+
+/* ---------------------------------------------------------------------
+ * 4. SIMULADOR DA GRANDE FAMÍLIA
+ * A pessoa escolhe o cômodo, os minutos parada e se é noite. A página
+ * calcula o estado com a MESMA regra do Python (calcular_limites e
+ * classificar) e mostra a cor e a fala do personagem daquele cômodo.
+ * --------------------------------------------------------------------- */
+
+// A família. Uma lista de objetos: cada objeto junta os dados de um sensor.
+// "noComodo" já vem com o artigo certo ("no quarto", "na sala") para as frases.
+// "falas" segue a ordem dos estados: [NORMAL, ATENÇÃO, ALERTA]
+const FAMILIA = [
+  { comodo: "quarto", nome: "Dorival", nomeComodo: "Quarto", noComodo: "no quarto",
+    falas: ["Pode dormir tranquila. Estou de olho no quarto.",
+            "Dona Maria, a senhora está bem? Faz tempo que não se mexe.",
+            "Ela não responde! Luzia, acende a luz da janela!"] },
+  { comodo: "banheiro", nome: "Lavínia", nomeComodo: "Banheiro", noComodo: "no banheiro",
+    falas: ["Tudo certo no banheiro.",
+            "Dona Maria? Tá tudo bem aí?",
+            "Ela não sai do banheiro! Luzia, chama ajuda agora!"] },
+  { comodo: "cozinha", nome: "Salete", nomeComodo: "Cozinha", noComodo: "na cozinha",
+    falas: ["Café passado! Tudo em ordem na cozinha.",
+            "A cozinha está quieta demais... Tudo bem, Dona Maria?",
+            "Nada de movimento na cozinha! Luzia, chama o vizinho!"] },
+  { comodo: "sala", nome: "Sofia", nomeComodo: "Sala", noComodo: "na sala",
+    falas: ["Começou a novela! Tudo bem por aqui.",
+            "A senhora cochilou no sofá? Dá um sinal!",
+            "Ela não se mexe no sofá! Luzia, chama ajuda!"] },
+  { comodo: "corredor", nome: "Andrade", nomeComodo: "Corredor", noComodo: "no corredor",
+    falas: ["Vi ela passar! Tudo normal.",
+            "Faz tempo que ninguém passa por aqui...",
+            "Ninguém se mexe no corredor! Luzia, alerta!"] },
+  { comodo: "entrada", nome: "Portela", nomeComodo: "Entrada", noComodo: "na entrada",
+    falas: ["Tudo tranquilo na porta.",
+            "Ela está parada na entrada faz tempo. Tudo bem?",
+            "Ela não se mexe na entrada! Luzia, chama o vizinho!"] }
+];
+
+// O que a Luzia faz em cada estado (mesma rede de cuidado do Python)
+const ACOES = [
+  "Ninguém é avisado. A família continua cuidando, sem vigiar.",
+  "A Luzia pergunta para a Dona Maria: \"Está tudo bem?\". Ninguém é chamado ainda.",
+  "A Luzia acende a luz da janela e toca o alarme: avisa o vizinho e o familiar, e depois o SAMU (192)."
+];
+
+// Procura na FAMILIA o sensor do cômodo escolhido (ex.: "banheiro" -> Lavínia)
+function buscarSensor(comodo) {
+  for (let i = 0; i < FAMILIA.length; i++) {
+    if (FAMILIA[i].comodo === comodo) {
+      return FAMILIA[i];
+    }
+  }
+  return FAMILIA[0];   // não deveria acontecer; volta o primeiro por segurança
+}
+
+// Igual ao calcular_limites() do Python. Devolve [atencao, alerta] em minutos.
+function calcularLimites(comodo, ehNoite, temperaturaExtrema) {
+  let atencao;
+  let alerta;
+  if (comodo === "banheiro") {
+    atencao = LIMITE_ATENCAO_BANHEIRO;
+    alerta = LIMITE_ALERTA_BANHEIRO;
+  } else {
+    atencao = LIMITE_ATENCAO_PADRAO;
+    alerta = LIMITE_ALERTA_PADRAO;
+    // À noite, dormir parado é normal: os limites dobram (menos no banheiro)
+    if (ehNoite) {
+      atencao = atencao * 2;
+      alerta = alerta * 2;
+    }
+  }
+  // Casa fria ou quente demais: os limites caem pela metade.
+  // Math.floor faz a divisão inteira, como o // do Python.
+  if (temperaturaExtrema) {
+    atencao = Math.floor(atencao / 2);
+    alerta = Math.floor(alerta / 2);
+  }
+  return [atencao, alerta];
+}
+
+// Igual ao classificar() do Python. Devolve 0 (NORMAL), 1 (ATENÇÃO) ou 2 (ALERTA).
+// Testa primeiro o caso mais grave, igual ao if/elif/else do Python.
+function classificar(minutos, limites) {
+  if (minutos >= limites[1]) {
+    return 2;
+  } else if (minutos >= limites[0]) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+// 300 vira "300 min (5 h)"; 90 vira "90 min (1 h 30 min)"; 20 vira "20 min"
+function formatarMinutos(minutos) {
+  if (minutos < 60) {
+    return minutos + " min";
+  }
+  const horas = Math.floor(minutos / 60);
+  const resto = minutos % 60;
+  let texto = minutos + " min (" + horas + " h";
+  if (resto > 0) {
+    texto = texto + " " + resto + " min";
+  }
+  return texto + ")";
+}
+
+function iniciarSimulador() {
+  const form = pegar("form-simulador");
+  const campoComodo = pegar("sim-comodo");
+  const campoMinutos = pegar("sim-minutos");
+  const campoNoite = pegar("sim-noite");
+  const erroMinutos = pegar("erro-minutos");
+  const resultado = pegar("sim-resultado");
+  const textoEstado = pegar("sim-estado");
+  const textoPersonagem = pegar("sim-personagem");
+  const textoFala = pegar("sim-fala");
+  const textoAcao = pegar("sim-acao");
+  const textoExplicacao = pegar("sim-explicacao");
+  if (!todosExistem([form, campoComodo, campoMinutos, campoNoite, erroMinutos, resultado,
+                     textoEstado, textoPersonagem, textoFala, textoAcao, textoExplicacao])) {
+    return;
+  }
+  // Opcional: a caixinha da temperatura
+  const campoTemperatura = document.getElementById("sim-temperatura");
+
+  // Listas paralelas dos 3 estados: nome, classe do CSS, cor de fundo e cor do texto
+  const NOMES_ESTADO = ["NORMAL", "ATENÇÃO", "ALERTA"];
+  const CLASSES_ESTADO = ["estado-normal", "estado-atencao", "estado-alerta"];
+  const CORES_FUNDO = [COR_VERDE, COR_AMBAR, COR_VERMELHO];
+  const CORES_TEXTO = [COR_BRANCO, COR_AZUL_NOITE, COR_BRANCO];   // contraste alto
+
+  // Confere o campo dos minutos. Devolve o erro, ou "" se estiver certo.
+  function validarMinutos(texto) {
+    if (texto === "") {
+      return "Digite há quantos minutos a Dona Maria está parada.";
+    }
+    const numero = Number(texto);   // "45" vira 45; "abc" vira NaN (não é número)
+    if (!Number.isInteger(numero)) {
+      return "Use um número inteiro de minutos, por exemplo 45.";
+    }
+    if (numero < 0 || numero > MINUTOS_MAXIMOS) {
+      return "Use um valor de 0 a " + MINUTOS_MAXIMOS + " minutos (um dia inteiro).";
+    }
+    return "";
+  }
+
+  function simular() {
+    const texto = campoMinutos.value.trim();
+    const erro = validarMinutos(texto);
+    mostrarErro(campoMinutos, erroMinutos, erro);
+    if (erro !== "") {
+      resultado.hidden = true;
+      return;
+    }
+
+    // Ler o que a pessoa escolheu
+    const minutos = Number(texto);
+    const comodo = campoComodo.value;
+    const ehNoite = campoNoite.checked;   // checkbox marcada = true
+    let temperaturaExtrema = false;
+    if (campoTemperatura !== null) {
+      temperaturaExtrema = campoTemperatura.checked;
+    }
+
+    //  Decidir (a mesma conta do Python e do ESP32)
+    const limites = calcularLimites(comodo, ehNoite, temperaturaExtrema);
+    const estado = classificar(minutos, limites);
+    const sensor = buscarSensor(comodo);
+
+    //  MANIPULAÇÃO DO DOM (textos, classe e cores)
+    textoEstado.textContent = NOMES_ESTADO[estado];
+    textoEstado.style.backgroundColor = CORES_FUNDO[estado];
+    textoEstado.style.color = CORES_TEXTO[estado];
+
+    textoPersonagem.textContent = sensor.nome + " (" + sensor.nomeComodo + ")";
+    textoFala.textContent = "“" + sensor.falas[estado] + "”";   
+    textoAcao.textContent = ACOES[estado];
+
+    // Explica a conta, para a pessoa entender POR QUE deu esse estado
+    let explicacao = "Para quem está " + sensor.noComodo + ": ATENÇÃO a partir de " +
+      formatarMinutos(limites[0]) + " e ALERTA a partir de " + formatarMinutos(limites[1]) + ".";
+    if (ehNoite && comodo !== "banheiro") {
+      explicacao = explicacao + " À noite os limites dobram, porque dormir parado é normal.";
+    }
+    if (ehNoite && comodo === "banheiro") {
+      explicacao = explicacao + " No banheiro os limites NÃO dobram à noite: a Lavínia continua atenta.";
+    }
+    if (temperaturaExtrema) {
+      explicacao = explicacao + " Com a casa muito fria ou muito quente, os limites caem pela metade.";
+    }
+    textoExplicacao.textContent = explicacao;
+
+    // Troca a classe do resultado: tira as 3 e coloca só a do estado atual
+    for (let i = 0; i < CLASSES_ESTADO.length; i++) {
+      resultado.classList.remove(CLASSES_ESTADO[i]);
+    }
+    resultado.classList.add(CLASSES_ESTADO[estado]);
+    resultado.hidden = false;
+  }
+
+  // Clicou em "Simular": não recarrega a página, só calcula
+  form.addEventListener("submit", function (evento) {
+    evento.preventDefault();
+    simular();
+  });
+
+  // Se o resultado já está na tela e a pessoa muda o cômodo
+  form.addEventListener("change", function () {
+    if (!resultado.hidden) {
+      simular();
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  iniciarMenu();
+  iniciarSlideshow();
+  iniciarFormularioVizinho();
+  iniciarSimulador();
+});
