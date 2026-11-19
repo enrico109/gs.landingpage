@@ -453,7 +453,16 @@ tbody tr:last-child th, tbody tr:last-child td { border-bottom: none; }
   align-items: center;
   gap: 16px;
 }
-.slide { margin: 0; width: 100%; }
+/* Janela que mostra só um slide; o trilho com todos fica lado a lado e desliza */
+.slides-janela { width: 100%; overflow: hidden; }
+.slides-trilho {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+.slide { margin: 0; flex: 0 0 100%; min-width: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .slides-trilho { transition: none; }
+}
 .slide img {
   width: 100%;
   aspect-ratio: 2 / 1;
@@ -462,8 +471,6 @@ tbody tr:last-child th, tbody tr:last-child td { border-bottom: none; }
   border-radius: 12px;
 }
 .slide figcaption { margin-top: 12px; text-align: center; }
-.slide.ativo { animation: aparecer 0.5s ease; }
-@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
 .slideshow-controles { display: flex; align-items: center; gap: 16px; }
 .botao-redondo {
   width: 56px;

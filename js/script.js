@@ -95,6 +95,7 @@ function iniciarSlideshow() {
     return;
   }
 
+  const trilho = pegar("slides-trilho");
   const slides = caixa.querySelectorAll(".slide");
   if (slides.length === 0) {
     console.warn("[A Grande Família] Nenhum class=\"slide\" dentro do #slideshow.");
@@ -115,7 +116,6 @@ function iniciarSlideshow() {
     bolinha.type = "button";
     bolinha.className = "bolinha";
     bolinha.setAttribute("aria-label", "Mostrar imagem " + (i + 1) + " de " + slides.length);
-    i
     bolinha.addEventListener("click", function () {
       mostrarSlide(i);
       reiniciarTroca();   
@@ -126,7 +126,6 @@ function iniciarSlideshow() {
 
   // Mostra o slide da posição 
   function mostrarSlide(posicao) {
-    mo
     if (posicao >= slides.length) {
       posicao = 0;
     } else if (posicao < 0) {
@@ -134,10 +133,15 @@ function iniciarSlideshow() {
     }
     atual = posicao;
 
+    // Desliza o trilho: cada slide ocupa 100% da largura
+    if (trilho) {
+      trilho.style.transform = "translateX(-" + (atual * 100) + "%)";
+    }
+
     for (let i = 0; i < slides.length; i++) {
       const visivel = (i === atual);
-      slides[i].hidden = !visivel;                    
-      slides[i].classList.toggle("ativo", visivel);   
+      slides[i].setAttribute("aria-hidden", String(!visivel));
+      slides[i].classList.toggle("ativo", visivel);
       bolinhas[i].classList.toggle("ativa", visivel);
       if (visivel) {
         bolinhas[i].setAttribute("aria-current", "true");
