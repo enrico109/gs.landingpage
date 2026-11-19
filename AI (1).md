@@ -36,3 +36,5 @@ O código JavaScript desse arquivo foi **gerado pelo Claude Code** a partir dess
 - **Limitações:** o código gerado pela IA nem sempre encaixa direto no projeto. Foi preciso testar no navegador e ajustar nomes, classes e caminhos.
 - **Dificuldades:** entender um código que a gente não escreveu linha por linha leva tempo. Por isso revisamos o `scriptfamilia.js` juntos para conseguir explicar o que ele faz.
 - **Decisão da equipe:** o `script.js` foi feito por nós e só revisado pela IA. O `scriptfamilia.js` foi a parte em que a IA teve papel maior, e por isso deixamos isso registrado aqui.
+
+AI MD FEITO por CLAUDE 
